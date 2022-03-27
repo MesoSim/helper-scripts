@@ -1,0 +1,21 @@
+server {
+
+    root /data/public_html;
+    index index.html index.htm index.nginx-debian.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location = /api { rewrite ^ /api/; }
+    location /api { try_files $uri @api; }
+    location @api {
+        include uwsgi_params;
+        uwsgi_pass unix:/tmp/chaseapi.sock;
+    }
+
+    listen 80;
+    listen [::]:80;
+
+}
+
